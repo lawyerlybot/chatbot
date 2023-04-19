@@ -83,3 +83,27 @@
 </body>
 </html>
 
+document.getElementById("user-input-form").addEventListener("submit", async (event) => {
+  event.preventDefault();
+
+  const inputField = document.getElementById("user-input");
+  const userInput = inputField.value;
+  inputField.value = "";
+
+  const response = await fetch("http://localhost:5000/chat", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({ query: userInput }),
+  });
+
+  const responseData = await response.json();
+  const chatbotResponse = responseData.response;
+
+  const messageElement = document.createElement("p");
+  messageElement.textContent = `You: ${userInput}\nChatbot: ${chatbotResponse}`;
+  document.getElementById("messages").appendChild(messageElement);
+});
+
+
