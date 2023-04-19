@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chatbot</title>
+</head>
+<body>
+    <form id="chat-form">
+        <input type="text" id="user-query" placeholder="Type your question here...">
+        <button type="submit">Send</button>
+    </form>
+    <div id="bot-response"></div>
+
+    <script>
+        document.getElementById('chat-form').addEventListener('submit', async (event) => {
+            event.preventDefault();
+            const query = document.getElementById('user-query').value;
+            const responseContainer = document.getElementById('bot-response');
+
+            const response = await fetch('https://your-web-app-url/chat', {  // Replace with the URL of your deployed Flask app
+                method: 'POST',
+                body: new FormData(event.target),
+            });
+
+            const jsonResponse = await response.json();
+            responseContainer.textContent = jsonResponse.response;
+        });
+    </script>
+</body>
+</html>
