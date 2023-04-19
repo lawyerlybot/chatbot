@@ -133,7 +133,7 @@
      const chatContainer = document.querySelector(".chat-container");
       chatContainer.style.display = chatContainer.style.display === "none" ? "block" : "none";
 });
-    .getElementById("user-input-form").addEventListener("submit", async (event) => {
+    document.getElementById("user-input-form").addEventListener("submit", async (event) => {
       event.preventDefault();
 
       const inputField = document.getElementById("user-input");
