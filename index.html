@@ -128,48 +128,41 @@
 
   <script>
     // Toggle chat container visibility
-    document.querySelector(".chat-bubble").addEventListener("click", () => {
-      const chatContainer = document.querySelector(".chat-container");
-      chatContainer.style.display = chatContainer.style.display === "none" ? "block" : "none";
-    });
-
     document.getElementById("user-input-form").addEventListener("submit", async (event) => {
-      event.preventDefault();
+  event.preventDefault();
 
-      const inputField = document.getElementById("user-input");
-      const userInput = inputField.value;
-      inputField.value = "";
+  const inputField = document.getElementById("user-input");
+  const userInput = inputField.value;
+  inputField.value = "";
 
-      const response = await fetch("http://localhost:5000/chat", {
-        const responseData = await response.json();
-        const chatbotResponse = responseData.response;
+  const response = await fetch("http://localhost:5000/chat", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({ query: userInput }),
+  });
 
-        const messagesContainer = document.getElementById("messages");
+  const responseData = await response.json();
+  const chatbotResponse = responseData.response;
 
-// Create user message element
-        const userMessageElement = document.createElement("p");
-        userMessageElement.classList.add("user-message");
-        userMessageElement.textContent = `You: ${userInput}`;
-        messagesContainer.appendChild(userMessageElement);
+  const messagesContainer = document.getElementById("messages");
 
-// Create LegaBot message element
-        const legabotMessageElement = document.createElement("p");
-        legabotMessageElement.classList.add("legabot-message");
-        legabotMessageElement.textContent = `LegaBot: ${chatbotResponse}`;
-        messagesContainer.appendChild(legabotMessageElement);
+  // Create user message element
+  const userMessageElement = document.createElement("p");
+  userMessageElement.classList.add("user-message");
+  userMessageElement.textContent = `You: ${userInput}`;
+  messagesContainer.appendChild(userMessageElement);
 
-// Scroll to the bottom of the messages container
-        messagesContainer.scrollTop = messagesContainer.scrollHeight;
+  // Create LegaBot message element
+  const legabotMessageElement = document.createElement("p");
+  legabotMessageElement.classList.add("legabot-message");
+  legabotMessageElement.textContent = `LegaBot: ${chatbotResponse}`;
+  messagesContainer.appendChild(legabotMessageElement);
 
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ query: userInput }),
-      });
-
-      // ... rest of the code
-    });
+  // Scroll to the bottom of the messages container
+  messagesContainer.scrollTop = messagesContainer.scrollHeight;
+});
   </script>
 </body>
 </html>
