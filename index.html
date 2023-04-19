@@ -78,12 +78,7 @@
   </div>
 
   <script>
-    // Your JavaScript code here
-  </script>
-</body>
-</html>
-
-document.getElementById("user-input-form").addEventListener("submit", async (event) => {
+    document.getElementById("user-input-form").addEventListener("submit", async (event) => {
   event.preventDefault();
 
   const inputField = document.getElementById("user-input");
@@ -105,5 +100,10 @@ document.getElementById("user-input-form").addEventListener("submit", async (eve
   messageElement.textContent = `You: ${userInput}\nChatbot: ${chatbotResponse}`;
   document.getElementById("messages").appendChild(messageElement);
 });
+  </script>
+</body>
+</html>
+
+
 
 
