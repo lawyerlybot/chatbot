@@ -15,15 +15,41 @@
 
     /* Container for the chatbot */
     .chat-container {
+      position: fixed;
+      bottom: 60px;
+      right: 20px;
       width: 100%;
-      max-width: 500px;
-      margin: 50px auto;
+      max-width: 350px;
       border: 1px solid #ccc;
       border-radius: 5px;
       background-color: #fff;
       box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+      display: none;
+      z-index: 1000;
     }
     
+    /* Chat bubble icon */
+    .chat-bubble {
+      position: fixed;
+      bottom: 20px;
+      right: 20px;
+      width: 60px;
+      height: 60px;
+      background-color: #007bff;
+      border-radius: 50%;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      cursor: pointer;
+      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+      z-index: 1000;
+    }
+
+    .chat-bubble img {
+      width: 30px;
+      height: 30px;
+    }
+
     /* User message */
     .user-message {
        margin-bottom: 5px;
@@ -83,12 +109,15 @@
       box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
     }
 
-    #send-button:hover {
+        #send-button:hover {
       background-color: #0069d9;
     }
   </style>
 </head>
 <body>
+  <div class="chat-bubble">
+    <img src="chat-icon.svg" alt="Chat">
+  </div>
   <div class="chat-container">
     <div id="messages"></div>
     <form id="user-input-form">
@@ -98,23 +127,33 @@
   </div>
 
   <script>
+    // Toggle chat container visibility
+    document.querySelector(".chat-bubble").addEventListener("click", () => {
+      const chatContainer = document.querySelector(".chat-container");
+      chatContainer.style.display = chatContainer.style.display === "none" ? "block" : "none";
+    });
+
     document.getElementById("user-input-form").addEventListener("submit", async (event) => {
-    event.preventDefault();
+      event.preventDefault();
 
-   const inputField = document.getElementById("user-input");
-    const userInput = inputField.value;
-    inputField.value = "";
+      const inputField = document.getElementById("user-input");
+      const userInput = inputField.value;
+      inputField.value = "";
 
-   const response = await fetch("http://localhost:5000/chat", {
-     method: "POST",
-     headers: {
-        "Content-Type": "application/json",
-     },
-     body: JSON.stringify({ query: userInput }),
-   });
+      const response = await fetch("http://localhost:5000/chat", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ query: userInput }),
+      });
+
+      // ... rest of the code
+    });
   </script>
 </body>
 </html>
+
 
 
 
