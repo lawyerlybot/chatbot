@@ -28,15 +28,21 @@
     .user-message {
        margin-bottom: 5px;
        font-weight: bold;
-}
+    }
 
     /* LegaBot message */
     .legabot-message {
       margin-bottom: 5px;
       font-weight: normal;
-       margin-left: 20px;
-}
+      margin-left: 20px;
+    }
 
+    /* Message text with scrollbar */
+    .message-text {
+      max-height: 100px;
+      overflow-y: auto;
+      padding-right: 5px;
+    }
 
     /* Chat messages container */
     #messages {
@@ -106,28 +112,6 @@
      },
      body: JSON.stringify({ query: userInput }),
    });
-
-  const responseData = await response.json();
-  const chatbotResponse = responseData.response;
-
-  const messagesContainer = document.getElementById("messages");
-
-  // Create user message element
-  const userMessageElement = document.createElement("p");
-  userMessageElement.classList.add("user-message");
-  userMessageElement.textContent = `You: ${userInput}`;
-  messagesContainer.appendChild(userMessageElement);
-
-  // Create LegaBot message element
-  const legabotMessageElement = document.createElement("p");
-  legabotMessageElement.classList.add("legabot-message");
-  legabotMessageElement.textContent = `LegaBot: ${chatbotResponse}`;
-  messagesContainer.appendChild(legabotMessageElement);
-
-  // Scroll to the bottom of the messages container
-  messagesContainer.scrollTop = messagesContainer.scrollHeight;
-});
-
   </script>
 </body>
 </html>
