@@ -141,6 +141,26 @@
       inputField.value = "";
 
       const response = await fetch("http://localhost:5000/chat", {
+        const responseData = await response.json();
+        const chatbotResponse = responseData.response;
+
+        const messagesContainer = document.getElementById("messages");
+
+// Create user message element
+        const userMessageElement = document.createElement("p");
+        userMessageElement.classList.add("user-message");
+        userMessageElement.textContent = `You: ${userInput}`;
+        messagesContainer.appendChild(userMessageElement);
+
+// Create LegaBot message element
+        const legabotMessageElement = document.createElement("p");
+        legabotMessageElement.classList.add("legabot-message");
+        legabotMessageElement.textContent = `LegaBot: ${chatbotResponse}`;
+        messagesContainer.appendChild(legabotMessageElement);
+
+// Scroll to the bottom of the messages container
+        messagesContainer.scrollTop = messagesContainer.scrollHeight;
+
         method: "POST",
         headers: {
           "Content-Type": "application/json",
