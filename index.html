@@ -12,7 +12,17 @@
       margin: 0;
       padding: 0;
     }
-
+    
+.avatar {
+  position: absolute;
+  top: -40px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 80px;
+  height: 80px;
+  border-radius: 50%;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+}
     /* Container for the chatbot */
 .chat-container {
   position: fixed;
@@ -25,7 +35,8 @@
   box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
   display: none; /* Revert this line */
   z-index: 9999;
-  flex-direction: column; /* Add this line */
+  flex-direction: column;
+  padding-top: 40px; 
 }
 
 
@@ -121,6 +132,7 @@
     <img src="chat-icon.svg" alt="LegaBot">
   </div>
   <div class="chat-container">
+    <img src="avatar.png" alt="LegaBot Avatar" class="avatar">
     <div id="messages"></div>
     <form id="user-input-form">
       <input type="text" id="user-input" placeholder="Type your message...">
