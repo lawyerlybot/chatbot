@@ -43,7 +43,7 @@ iframe {
   border-radius: 5px;
   background-color: #fff;
   box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
-  display: grid;
+  display: none;
   z-index: 100000;
   flex-direction: column;
   padding-top: 50px;
@@ -184,7 +184,7 @@ iframe {
 
     const displayGreetingMessage = () => {
       const messagesContainer = document.getElementById("messages");
-      const greetingMessage = "Hello! How can I help you today?";
+      const greetingMessage = "LegaBot: Hello! How can I help you today?";
       const legabotMessageContainer = document.createElement("div");
       legabotMessageContainer.classList.add("message-container");
       const legabotMessageElement = document.createElement("p");
