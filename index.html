@@ -35,8 +35,8 @@ iframe {
 /* Container for the chatbot */
 .chat-container {
   position: fixed;
-  top: 50%;
-  left: 50%;
+  bottom: 90px; /* Changed from top: 50% */
+  right: 20px; /* Changed from left: 50% */
   transform: translate(-50%, -50%);
   width: 350px;
   border: 1px solid #ccc;
@@ -44,7 +44,7 @@ iframe {
   background-color: #fff;
   box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
   display: grid;
-  z-index: 2147483647;
+  z-index: 100000;
   flex-direction: column;
   padding-top: 50px;
 }
@@ -63,7 +63,7 @@ iframe {
   align-items: center;
   cursor: pointer;
   box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
-  z-index: 2147483647;
+  z-index: 99999;
   overflow: hidden;
 }
 
