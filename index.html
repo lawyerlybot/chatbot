@@ -161,6 +161,11 @@ iframe {
 </style>
 </head>
 <body>
+  <input type="text" id="start_time" placeholder="Start time">
+<input type="text" id="end_time" placeholder="End time">
+<input type="text" id="summary" placeholder="Summary">
+<input type="text" id="description" placeholder="Description">
+<input type="text" id="location" placeholder="Location">
   <div class="chat-bubble">
   <div class="close-text">Ask</div>
   <img src="https://github.com/lawyerlybot/chatbot/raw/main/Avatar.png" alt="Close Bot">
@@ -175,6 +180,38 @@ iframe {
   </div>
 
   <script>
+    $(document).ready(function() {
+    $('#submit').click(function() {
+        let user_query = $('#nlp_input').val();
+        let start_time = $('#start_time').val();
+        let end_time = $('#end_time').val();
+        let summary = $('#summary').val();
+        let description = $('#description').val();
+        let location = $('#location').val();
+
+        $.ajax({
+            url: "/chat",
+            type: "POST",
+            contentType: "application/json",
+            data: JSON.stringify({
+                'user_query': user_query,
+                'start_time': start_time,
+                'end_time': end_time,
+                'summary': summary,
+                'description': description,
+                'location': location
+            }),
+            success: function(response) {
+                console.log(response);
+                $('#nlp_output').text(response['response']);
+            },
+            error: function(error) {
+                console.log(error);
+            }
+        });
+    });
+});
+
     // Toggle chat container visibility
 
     document.querySelector(".chat-bubble").addEventListener("click", () => {
