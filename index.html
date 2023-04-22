@@ -182,6 +182,18 @@ iframe {
       chatContainer.style.display = chatContainer.style.display === "none" ? "grid" : "none";
     });
 
+    const displayGreetingMessage = () => {
+      const messagesContainer = document.getElementById("messages");
+      const greetingMessage = "Hello! How can I help you today?";
+      const legabotMessageContainer = document.createElement("div");
+      legabotMessageContainer.classList.add("message-container");
+      const legabotMessageElement = document.createElement("p");
+      legabotMessageElement.classList.add("legabot-message");
+      legabotMessageElement.textContent = greetingMessage;
+      legabotMessageContainer.appendChild(legabotMessageElement);
+      messagesContainer.appendChild(legabotMessageContainer);
+    };
+
     document.getElementById("user-input-form").addEventListener("submit", async (event) => {
       event.preventDefault();
 
@@ -223,6 +235,9 @@ iframe {
       // Scroll to the bottom of the messages container
       messagesContainer.scrollTop = messagesContainer.scrollHeight;
     });
+
+    // Display the greeting message when the chatbot is opened
+    document.querySelector(".chat-bubble").addEventListener("click", displayGreetingMessage);
   </script>
 </body>
 </html>
