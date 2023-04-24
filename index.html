@@ -173,7 +173,9 @@
       let msg_container = $("<div>").addClass("message-container");
       let msg_element = $("<p>").addClass(msg_class).text(msg);
       msg_container.append(msg_element);
+      console.log("Adding message:", msg, "User:", user);
       $("#messages").append(msg_container);
+      
     }
 
     function show_appointment_form() {
