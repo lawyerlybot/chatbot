@@ -4,6 +4,73 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>LegaBot</title>
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+  $("#message-form").on("submit", function (event) {
+    event.preventDefault();
+    let user_query = $("#query").val();
+    add_message(user_query, true);
+
+    $.ajax({
+        url: "/chat",
+        method: "POST",
+        data: JSON.stringify({ query: user_query }),
+        contentType: "application/json",
+        success: function (response) {
+            if (response.type === "appointment") {
+                add_message(response.response, false);
+                show_appointment_form();
+            } else {
+                add_message(response.response, false);
+            }
+        },
+    });
+
+    $("#query").val("");
+});
+
+$("#messages").on("submit", "#appointment-form", function (event) {
+    event.preventDefault();
+    let start_time = $("#start_time").val();
+    let end_time = $("#end_time").val();
+    let summary = $("#summary").val();
+    let description = $("#description").val();
+    let location = $("#location").val();
+
+    $.ajax({
+        url: "/book_appointment",
+        method: "POST",
+        data: JSON.stringify({
+            start_time: start_time,
+            end_time: end_time,
+            summary: summary,
+            description: description,
+            location: location,
+        }),
+        contentType: "application/json",
+        success: function (response) {
+            add_message(response.response, false);
+        },
+    });
+
+    $(this).remove();
+});
+</head>
+<body>
+  <div class="chat-bubble">
+    <div class="close-text">Ask</div>
+    <img src="https://github.com/lawyerlybot/chatbot/raw/main/Avatar.png" alt="Close Bot">
+  </div>
+  <div class="chat-container">
+    <img src="https://github.com/lawyerlybot/chatbot/raw/main/Avatar.png" alt="LegaBot Avatar" class="avatar">
+    <div id="messages"></div>
+    <form id="message-form">
+      <input type="text" id="query" placeholder="Type your message...">
+      <button type="submit" id="send-button">Send</button>
+    </form>
+  </div>
   <style>
     /* General styles */
     body {
@@ -180,104 +247,95 @@
   </div>
 
   <script>
-    document.querySelector(".chat-bubble").addEventListener("click", () => {
-      const chatContainer = document.querySelector(".chat-container");
-      chatContainer.style.display = chatContainer.style.display === "none" ? "grid" : "none";
-      
-      $('#submit').click(function() {
-        let user_query = $('#nlp_input').val();
-        let start_time = $('#start_time').val();
-        let end_time = $('#end_time').val();
-        let summary = $('#summary').val();
-        let description = $('#description').val();
-        let location = $('#location').val();
+    function add_message(msg, user) {
+      let msg_class = user ? "user-message" : "legabot-message";
+      let msg_container = $("<div>").addClass("message-container");
+      let msg_element = $("<p>").addClass(msg_class).text(msg);
+      msg_container.append(msg_element);
+      $("#messages").append(msg_container);
+    }
 
-        $.ajax({
-            url: "/chat",
-            type: "POST",
-            contentType: "application/json",
-            data: JSON.stringify({
-                'user_query': user_query,
-                'start_time': start_time,
-                'end_time': end_time,
-                'summary': summary,
-                'description': description,
-                'location': location
-            }),
-            success: function(response) {
-                console.log(response);
-                $('#nlp_output').text(response['response']);
-            },
-            error: function(error) {
-                console.log(error);
-            }
-        });
-      });
-    });
+    function show_appointment_form() {
+      let form = `
+        <form id="appointment-form">
+          <input type="text" id="start_time" placeholder="Start time">
+          <input type="text" id="end_time" placeholder="End time">
+          <input type="text" id="summary" placeholder="Summary">
+          <input type="text" id="description" placeholder="Description">
+          <input type="text" id="location" placeholder="Location">
+          <button type="submit">Submit</button>
+        </form>
+      `;
+      $("#messages").append(form);
+    }
 
-    // Toggle chat container visibility
-
-    document.querySelector(".chat-bubble").addEventListener("click", () => {
-      const chatContainer = document.querySelector(".chat-container");
-      chatContainer.style.display = chatContainer.style.display === "none" ? "grid" : "none";
-    });
-
-    const displayGreetingMessage = () => {
-      const messagesContainer = document.getElementById("messages");
-      const greetingMessage = "LegaBot: Hello! How can I help you today?";
-      const legabotMessageContainer = document.createElement("div");
-      legabotMessageContainer.classList.add("message-container");
-      const legabotMessageElement = document.createElement("p");
-      legabotMessageElement.classList.add("legabot-message");
-      legabotMessageElement.textContent = greetingMessage;
-      legabotMessageContainer.appendChild(legabotMessageElement);
-      messagesContainer.appendChild(legabotMessageContainer);
-    };
-
-    document.getElementById("user-input-form").addEventListener("submit", async (event) => {
+    $("#message-form").on("submit", function (event) {
       event.preventDefault();
+      let user_query = $("#query").val();
+      add_message(user_query, true);
 
-      const inputField = document.getElementById("user-input");
-      const userInput = inputField.value;
-      inputField.value = "";
-
-      const response = await fetch("http://localhost:5000/chat", {
+      $.ajax({
+        url: "/chat",
         method: "POST",
-        headers: {
-          "Content-Type": "application/json",
+        data: JSON.stringify({ query: user_query }),
+        contentType: "application/json",
+        success: function (response) {
+          if (response.type === "appointment") {
+            add_message(response.response, false);
+            show_appointment_form();
+          } else {
+            add_message(response.response, false);
+          }
         },
-        body: JSON.stringify({ query: userInput }),
       });
 
-      const responseData = await response.json();
-      const chatbotResponse = responseData.response;
-
-      const messagesContainer = document.getElementById("messages");
-
-      // Create user message element
-      const userMessageContainer = document.createElement("div");
-      userMessageContainer.classList.add("message-container");
-      const userMessageElement = document.createElement("p");
-      userMessageElement.classList.add("user-message");
-      userMessageElement.textContent = userInput;
-      userMessageContainer.appendChild(userMessageElement);
-      messagesContainer.appendChild(userMessageContainer);
-
-      // Create LegaBot message element
-      const legabotMessageContainer = document.createElement("div");
-      legabotMessageContainer.classList.add("message-container");
-      const legabotMessageElement = document.createElement("p");
-      legabotMessageElement.classList.add("legabot-message");
-      legabotMessageElement.textContent = chatbotResponse;
-      legabotMessageContainer.appendChild(legabotMessageElement);
-      messagesContainer.appendChild(legabotMessageContainer);
-
-      // Scroll to the bottom of the messages container
-      messagesContainer.scrollTop = messagesContainer.scrollHeight;
+      $("#query").val("");
     });
 
-    // Display the greeting message when the chatbot is opened
-    document.querySelector(".chat-bubble").addEventListener("click", displayGreetingMessage);
+    $("#messages").on("submit", "#appointment-form", function (event) {
+      event.preventDefault();
+      let start_time = $("#start_time").val();
+      let end_time = $("#end_time").val();
+      let summary = $("#summary").val();
+      let description = $("#description").val();
+      let location = $("#location").val();
+
+      $.ajax({
+        url: "/book_appointment",
+        method: "POST",
+        data: JSON.stringify({
+        start_time: start_time
+        end_time: end_time,
+        summary: summary,
+        description: description,
+        location: location,
+      }),
+      contentType: "application/json",
+      success: function (response) {
+        add_message(response.response, false);
+      },
+      error: function (error) {
+        console.log(error);
+      },
+    });
+
+    $(this).remove();
+  });
+
+  // Toggle chat container visibility
+  document.querySelector(".chat-bubble").addEventListener("click", () => {
+    const chatContainer = document.querySelector(".chat-container");
+    chatContainer.style.display = chatContainer.style.display === "none" ? "grid" : "none";
+  });
+
+  // Display the greeting message when the chatbot is opened
+  const displayGreetingMessage = () => {
+    const messagesContainer = document.getElementById("messages");
+    const greetingMessage = "LegaBot: Hello! How can I help you today?";
+    add_message(greetingMessage, false);
+  };
+
+  document.querySelector(".chat-bubble").addEventListener("click", displayGreetingMessage);
   </script>
 </body>
 </html>
