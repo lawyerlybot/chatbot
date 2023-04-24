@@ -256,7 +256,15 @@
       add_message(greetingMessage, false);
     };
 
-    document.querySelector(".chat-bubble").addEventListener("click", displayGreetingMessage);
+    const chatBubble = document.querySelector(".chat-bubble");
+
+    const displayGreetingMessageAndRemoveListener = () => {
+     displayGreetingMessage();
+     chatBubble.removeEventListener("click", displayGreetingMessageAndRemoveListener);
+};
+
+     chatBubble.addEventListener("click", displayGreetingMessageAndRemoveListener);
+
   </script>
 </body>
 </html>
