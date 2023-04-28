@@ -197,19 +197,16 @@
       let typing_indicator = add_typing_indicator();
 
       setTimeout(function () {
-  const mockResponse = {
-    response: "I'm sorry, I cannot provide a proper response at the moment.",
-  };
+        remove_typing_indicator(typing_indicator);
 
-  remove_typing_indicator(typing_indicator);
-  add_message(mockResponse.response, false);
+        const mockResponse = {
+         response: "I'm sorry, I cannot provide a proper response at the moment.",
+    };
 
-  $("#query").val("");
-}, 2000);
-
-        $("#query").val("");
-      }, 2000);
-    });
+      add_message(mockResponse.response, false);
+      $("#query").val("");
+  }, 2000);
+});
 
     // Toggle chat container visibility
     document.querySelector(".chat-bubble").addEventListener("click", () => {
