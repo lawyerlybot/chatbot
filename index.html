@@ -213,6 +213,13 @@
       const chatContainer = document.querySelector(".chat-container");
       chatContainer.style.display = chatContainer.style.display === "none" ? "grid" : "none";
     });
+    const displayGreetingMessageAndRemoveListener = () => {
+     setTimeout(() => {
+      displayGreetingMessage();
+  }, 2000);
+  chatBubble.removeEventListener("click", displayGreetingMessageAndRemoveListener);
+};
+
     
     // Display the greeting message when the chatbot is opened
     const displayGreetingMessage = () => {
