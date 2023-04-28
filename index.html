@@ -175,21 +175,18 @@
       msg_container.append(msg_element);
       console.log("Adding message:", msg, "User:", user);
       $("#messages").append(msg_container);
-      
     }
 
-    function show_appointment_form() {
-      let form = `
-        <form id="appointment-form">
-          <input type="text" id="start_time" placeholder="Start time">
-          <input type="text" id="end_time" placeholder="End time">
-          <input type="text" id="summary" placeholder="Summary">
-          <input type="text" id="description" placeholder="Description">
-          <input type="text" id="location" placeholder="Location">
-          <button type="submit">Submit</button>
-        </form>
-      `;
-      $("#messages").append(form);
+    function add_typing_indicator() {
+      let msg_container = $("<div>").addClass("message-container");
+      let msg_element = $("<p>").addClass("legabot-message").text("Angelica is typing...");
+      msg_container.append(msg_element);
+      $("#messages").append(msg_container);
+      return msg_container;
+    }
+
+    function remove_typing_indicator(indicator) {
+      indicator.remove();
     }
 
     $("#message-form").on("submit", function (event) {
@@ -197,52 +194,25 @@
       let user_query = $("#query").val();
       add_message(user_query, true);
 
-      $.ajax({
-        url: "https://us-central1-crucial-axon-384222.cloudfunctions.net/chat",
-        method: "POST",
-        data: JSON.stringify({ query: user_query }),
-        contentType: "application/json",
-        success: function (response) {
-          if (response.type === "appointment") {
+      let typing_indicator = add_typing_indicator();
+
+      setTimeout(function () {
+        $.ajax({
+          url: "https://us-central1-crucial-axon-384222.cloudfunctions.net/chat",
+          method: "POST",
+          data: JSON.stringify({ query: user_query }),
+          contentType: "application/json",
+          success: function (response) {
+            remove_typing_indicator(typing_indicator);
             add_message(response.response, false);
-            show_appointment_form();
-          } else {
-            add_message(response.response, false);
-          }
-        },
-      });
+          },
+          error: function (error) {
+            console.log(error);
+          },
+        });
 
-      $("#query").val("");
-    });
-
-    $("#messages").on("submit", "#appointment-form", function (event) {
-      event.preventDefault();
-      let start_time = $("#start_time").val();
-      let end_time = $("#end_time").val();
-      let summary = $("#summary").val();
-      let description = $("#description").val();
-      let location = $("#location").val();
-
-      $.ajax({
-        url: "/book_appointment",
-        method: "POST",
-        data: JSON.stringify({
-          start_time: start_time,
-          end_time: end_time,
-          summary: summary,
-          description: description,
-          location: location,
-        }),
-        contentType: "application/json",
-        success: function (response) {
-          add_message(response.response, false);
-        },
-        error: function (error) {
-          console.log(error);
-        },
-      });
-
-      $(this).remove();
+        $("#query").val("");
+      }, 2000);
     });
 
     // Toggle chat container visibility
@@ -250,7 +220,7 @@
       const chatContainer = document.querySelector(".chat-container");
       chatContainer.style.display = chatContainer.style.display === "none" ? "grid" : "none";
     });
-
+    
     // Display the greeting message when the chatbot is opened
     const displayGreetingMessage = () => {
       const messagesContainer = document.getElementById("messages");
@@ -261,16 +231,14 @@
     const chatBubble = document.querySelector(".chat-bubble");
 
     const displayGreetingMessageAndRemoveListener = () => {
-     displayGreetingMessage();
-     chatBubble.removeEventListener("click", displayGreetingMessageAndRemoveListener);
-};
+      displayGreetingMessage();
+      chatBubble.removeEventListener("click", displayGreetingMessageAndRemoveListener);
+    };
 
-     chatBubble.addEventListener("click", displayGreetingMessageAndRemoveListener);
-
+    chatBubble.addEventListener("click", displayGreetingMessageAndRemoveListener);
   </script>
 </body>
 </html>
-
 
 
 
