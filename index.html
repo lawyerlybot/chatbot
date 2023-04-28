@@ -197,19 +197,15 @@
       let typing_indicator = add_typing_indicator();
 
       setTimeout(function () {
-        $.ajax({
-          url: "https://us-central1-crucial-axon-384222.cloudfunctions.net/chat",
-          method: "POST",
-          data: JSON.stringify({ query: user_query }),
-          contentType: "application/json",
-          success: function (response) {
-            remove_typing_indicator(typing_indicator);
-            add_message(response.response, false);
-          },
-          error: function (error) {
-            console.log(error);
-          },
-        });
+  const mockResponse = {
+    response: "I'm sorry, I cannot provide a proper response at the moment.",
+  };
+
+  remove_typing_indicator(typing_indicator);
+  add_message(mockResponse.response, false);
+
+  $("#query").val("");
+}, 2000);
 
         $("#query").val("");
       }, 2000);
