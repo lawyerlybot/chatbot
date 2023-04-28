@@ -168,74 +168,76 @@
 }
   </style>
   <script>
+    const apiUrl = 'https://angelica-f5h6cw6qqq-uc.a.run.app';
     function add_message(msg, user) {
-      let msg_class = user ? "user-message" : "legabot-message";
-      let msg_container = $("<div>").addClass("message-container");
-      let msg_element = $("<p>").addClass(msg_class).text(msg);
-      msg_container.append(msg_element);
-      console.log("Adding message:", msg, "User:", user);
-      $("#messages").append(msg_container);
-    }
+  let msg_class = user ? "user-message" : "legabot-message";
+  let msg_container = $("<div>").addClass("message-container");
+  let msg_element = $("<p>").addClass(msg_class).text(msg);
+  msg_container.append(msg_element);
+  console.log("Adding message:", msg, "User:", user);
+  $("#messages").append(msg_container);
+}
 
-    function add_typing_indicator() {
-      let msg_container = $("<div>").addClass("message-container");
-      let msg_element = $("<p>").addClass("legabot-message").text("Angelica is typing...");
-      msg_container.append(msg_element);
-      $("#messages").append(msg_container);
-      return msg_container;
-    }
+function add_typing_indicator() {
+  let msg_container = $("<div>").addClass("message-container");
+  let msg_element = $("<p>").addClass("legabot-message").text("Angelica is typing...");
+  msg_container.append(msg_element);
+  $("#messages").append(msg_container);
+  return msg_container;
+}
 
-    function remove_typing_indicator(indicator) {
-      indicator.remove();
-    }
+function remove_typing_indicator(indicator) {
+  indicator.remove();
+}
 
-    $("#message-form").on("submit", function (event) {
-      event.preventDefault();
-      let user_query = $("#query").val();
-      add_message(user_query, true);
+$("#message-form").on("submit", async function (event) {
+  event.preventDefault();
+  let user_query = $("#query").val();
+  add_message(user_query, true);
 
-      let typing_indicator = add_typing_indicator();
+  let typing_indicator = add_typing_indicator();
 
-      setTimeout(function () {
-        remove_typing_indicator(typing_indicator);
+  try {
+    const response = await fetch(`${apiUrl}/query`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ query: user_query }),
+    });
 
-        const mockResponse = {
-         response: "I'm sorry, I cannot provide a proper response at the moment.",
-    };
-
-      add_message(mockResponse.response, false);
-      $("#query").val("");
-  }, 2000);
+    const responseData = await response.json();
+    remove_typing_indicator(typing_indicator);
+   add_message(responseData.response, false);
+    $("#query").val("");
+}   catch (error) {
+      remove_typing_indicator(typing_indicator);
+      add_message("I'm sorry, there seems to be an issue with the server. Please try again later.", false);
+}
 });
 
     // Toggle chat container visibility
-    document.querySelector(".chat-bubble").addEventListener("click", () => {
-      const chatContainer = document.querySelector(".chat-container");
-      chatContainer.style.display = chatContainer.style.display === "none" ? "grid" : "none";
-    });
-    const displayGreetingMessageAndRemoveListener = () => {
-     setTimeout(() => {
-      displayGreetingMessage();
-  }, 2000);
+document.querySelector(".chat-bubble").addEventListener("click", () => {
+  const chatContainer = document.querySelector(".chat-container");
+  chatContainer.style.display = chatContainer.style.display === "none" ? "flex" : "none";
+});
+
+// Display the greeting message when the chatbot is opened
+const displayGreetingMessage = () => {
+  const messagesContainer = document.getElementById("messages");
+  const greetingMessage = "Angelica: Hello! How can I help you today?";
+  add_message(greetingMessage, false);
+};
+
+const chatBubble = document.querySelector(".chat-bubble");
+
+const displayGreetingMessageAndRemoveListener = () => {
+  displayGreetingMessage();
   chatBubble.removeEventListener("click", displayGreetingMessageAndRemoveListener);
 };
 
-    
-    // Display the greeting message when the chatbot is opened
-    const displayGreetingMessage = () => {
-      const messagesContainer = document.getElementById("messages");
-      const greetingMessage = "Angelica: Hello! How can I help you today?";
-      add_message(greetingMessage, false);
-    };
+chatBubble.addEventListener("click", displayGreetingMessageAndRemoveListener);
 
-    const chatBubble = document.querySelector(".chat-bubble");
-
-    const displayGreetingMessageAndRemoveListener = () => {
-      displayGreetingMessage();
-      chatBubble.removeEventListener("click", displayGreetingMessageAndRemoveListener);
-    };
-
-    chatBubble.addEventListener("click", displayGreetingMessageAndRemoveListener);
   </script>
 </body>
 </html>
