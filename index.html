@@ -191,36 +191,33 @@ function remove_typing_indicator(indicator) {
 }
 
 $("#message-form").on("submit", async function (event) {
-      event.preventDefault();
-      let user_query = $("#query").val();
-      add_message(user_query, true);
+  event.preventDefault();
+  let user_query = $("#query").val();
+  add_message(user_query, true);
 
-      let typing_indicator = add_typing_indicator();
+  let typing_indicator = add_typing_indicator();
 
-      try {
-        const response = await fetch(apiUrl, {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          catch (error) {
-          console.error("Error occurred while fetching data from the server:", error);
-          remove_typing_indicator(typing_indicator);
-           add_message("I'm sorry, there seems to be an issue with the server. Please try again later.", false);
-         }
-          body: JSON.stringify({ query: user_query }),
-          credentials: 'include',
-        });
-
-        const responseData = await response.json();
-        remove_typing_indicator(typing_indicator);
-        add_message(responseData.response, false);
-        $("#query").val("");
-      } catch (error) {
-        remove_typing_indicator(typing_indicator);
-        add_message("I'm sorry, there seems to be an issue with the server. Please try again later.", false);
-      }
+  try {
+    const response = await fetch(apiUrl, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ query: user_query }),
+      credentials: 'include',
     });
+
+    const responseData = await response.json();
+    remove_typing_indicator(typing_indicator);
+    add_message(responseData.response, false);
+    $("#query").val("");
+  } catch (error) {
+    console.error("Error occurred while fetching data from the server:", error);
+    remove_typing_indicator(typing_indicator);
+    add_message("I'm sorry, there seems to be an issue with the server. Please try again later.", false);
+  }
+});
+
 
     // Toggle chat container visibility
 document.querySelector(".chat-bubble").addEventListener("click", () => {
