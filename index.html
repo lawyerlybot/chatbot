@@ -168,7 +168,7 @@
 }
   </style>
   <script>
-    const apiUrl = 'https://angelica-f5h6cw6qqq-uc.a.run.app';
+    const apiUrl = 'http://localhost:5000/chat';
     function add_message(msg, user) {
   let msg_class = user ? "user-message" : "legabot-message";
   let msg_container = $("<div>").addClass("message-container");
@@ -191,30 +191,31 @@ function remove_typing_indicator(indicator) {
 }
 
 $("#message-form").on("submit", async function (event) {
-  event.preventDefault();
-  let user_query = $("#query").val();
-  add_message(user_query, true);
+      event.preventDefault();
+      let user_query = $("#query").val();
+      add_message(user_query, true);
 
-  let typing_indicator = add_typing_indicator();
+      let typing_indicator = add_typing_indicator();
 
-  try {
-    const response = await fetch(`${apiUrl}/query`, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({ query: user_query }),
+      try {
+        const response = await fetch(apiUrl, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({ query: user_query }),
+          credentials: 'include',
+        });
+
+        const responseData = await response.json();
+        remove_typing_indicator(typing_indicator);
+        add_message(responseData.response, false);
+        $("#query").val("");
+      } catch (error) {
+        remove_typing_indicator(typing_indicator);
+        add_message("I'm sorry, there seems to be an issue with the server. Please try again later.", false);
+      }
     });
-
-    const responseData = await response.json();
-    remove_typing_indicator(typing_indicator);
-   add_message(responseData.response, false);
-    $("#query").val("");
-}   catch (error) {
-      remove_typing_indicator(typing_indicator);
-      add_message("I'm sorry, there seems to be an issue with the server. Please try again later.", false);
-}
-});
 
     // Toggle chat container visibility
 document.querySelector(".chat-bubble").addEventListener("click", () => {
