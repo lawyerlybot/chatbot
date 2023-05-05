@@ -199,14 +199,14 @@ $("#message-form").on("submit", async function (event) {
 
   try {
     const response = await fetch(apiUrl, {
-      method: 'POST',
-      mode: 'cors',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({ query: user_query }),
-      credentials: 'include',
-    });
+  method: 'POST',
+  mode: 'cors',
+  headers: {
+    'Content-Type': 'application/json',
+  },
+  body: JSON.stringify({ query: user_query }),
+});
+
 
     const responseData = await response.json();
     remove_typing_indicator(typing_indicator);
